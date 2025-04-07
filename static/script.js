@@ -1,0 +1,35 @@
+let data = {};  // Stocker les résultats de la requête
+
+async function sendQuery() {
+    const query = document.getElementById('sqlQuery').value;
+    const response = await fetch('http://127.0.0.1:5000/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query })
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+        data = result.data;
+        alert('Données reçues avec succès ! Tu peux tracer ton graphe.');
+    } else {
+        alert('Erreur: ' + result.message);
+    }
+}
+
+function drawPlot() {
+    const code = document.getElementById('plotlyCode').value;
+    try {
+        const plotData = [eval('({' + code + '})')];
+        Plotly.newPlot('graph', plotData);
+
+        // Ajouter événement de click
+        var graphDiv = document.getElementById('graph');
+        graphDiv.on('plotly_click', function(data){
+            const point = data.points[0];
+            document.getElementById('pointInfo').innerText =
+                `x: ${point.x}, y: ${point.y}`;
+        });
+    } catch (e) {
+        alert('Erreur dans le code Plotly : ' + e.message);
+    }
+}

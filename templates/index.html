@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL and Graph Interface</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="../static/script.js" defer></script>
+</head>
+<body>
+    <h2>1️⃣ Tape ta requête SQL</h2>
+    <textarea id="sqlQuery" placeholder="SELECT * FROM students LIMIT 5;"></textarea><br>
+    <button onclick="sendQuery()">Envoyer la requête</button>
+
+    <h2>2️⃣ Tape ton code Plotly</h2>
+    <textarea id="plotlyCode" placeholder="Exemple : { x: data.Age, y: data.CGPA, type: 'scatter', mode: 'markers' }"></textarea><br>
+    <button onclick="drawPlot()">Tracer le graphe</button>
+
+    <div id="graph"></div>
+
+    <h2>🧩 Propriétés du point sélectionné</h2>
+    <div id="pointInfo"></div>
+</body>
+</html>
