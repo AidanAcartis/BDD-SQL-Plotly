@@ -9,12 +9,15 @@ async function sendQuery() {
     });
     const result = await response.json();
     if (result.status === 'success') {
-        data = result.data;
+        data = result.data; // Stockage des données reçues
+        document.getElementById('resultArea').innerText = JSON.stringify(data, null, 2); 
+        // 🔥 Affiche joliment le JSON
         alert('Données reçues avec succès ! Tu peux tracer ton graphe.');
     } else {
         alert('Erreur: ' + result.message);
     }
 }
+
 
 function drawPlot() {
     const code = document.getElementById('plotlyCode').value;
