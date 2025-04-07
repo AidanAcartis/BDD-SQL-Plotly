@@ -18,6 +18,15 @@ async function sendQuery() {
     }
 }
 
+function toggleResult() {
+    const resultDiv = document.getElementById('queryResult');
+    if (resultDiv.style.display === 'none') {
+        resultDiv.style.display = 'block'; // Affiche
+    } else {
+        resultDiv.style.display = 'none';  // Cache
+    }
+}
+
 
 function drawPlot() {
     const code = document.getElementById('plotlyCode').value;
