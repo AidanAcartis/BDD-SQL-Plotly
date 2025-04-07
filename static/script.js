@@ -38,8 +38,18 @@ function drawPlot() {
         var graphDiv = document.getElementById('graph');
         graphDiv.on('plotly_click', function(data){
             const point = data.points[0];
-            document.getElementById('pointInfo').innerText =
-                `x: ${point.x}, y: ${point.y}`;
+            let pointInfoText = '';
+    
+            // Dynamically iterate through all the properties of the point object
+            for (let key in point) {
+                // Avoid including internal properties like 'fullData'
+                if (point.hasOwnProperty(key) && key !== 'fullData') {
+                    pointInfoText += `${key}: ${point[key]}<br>`;
+                }
+            }
+    
+            // Update the 'pointInfo' element with all available point data
+            document.getElementById('pointInfo').innerHTML = pointInfoText;
         });
     } catch (e) {
         alert('Erreur dans le code Plotly : ' + e.message);

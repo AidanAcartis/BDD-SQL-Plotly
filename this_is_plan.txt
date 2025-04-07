@@ -1,0 +1,40 @@
+Voici les colonnes de mon donnees .csv 'student_depression_dataset.csv':
+id 
+Gender
+Age
+City
+Profession
+Academic_Pressure
+Work_Pressure
+CGPA
+Study_Satisfaction
+Job_Satisfaction
+Sleep_Duration
+Dietary_Habits
+Degree
+Suicidal_Thoughts
+Work_Study_Hours
+Financial_Stress
+Family_History
+Depression
+
+Voici une petite extrait de son en-tete:
+id	Gender	Age	City	        Profession	Academic_Pressure	Work_Pressure	CGPA	Study_Satisfaction	Job_Satisfaction	Sleep_Duration	     Dietary_Habits	  Degree	Suicidal_Thoughts	Work_Study_Hours	Financial_Stress	Family_History	Depression
+2	Male	33	Visakhapatnam	Student	    5	                0	            8.97	2	                0	                '5-6 hours'	         Healthy	      B.Pharm	Yes	                3	                1	                No	            1
+8	Female	24	Bangalore	    Student	    2	                0	            5.9	    5	                0	                '5-6 hours'	         Moderate	      BSc	    No	                3	                2	                Yes	            0
+26	Male	31	Srinagar	    Student	    3	                0	            7.03	5	                0	                'Less than 5 hours'	 Healthy	      BA	    No	                9	                1	                Yes	            0 
+
+Dans l'interface de ceci, il y aurait un input area pour faire entrer la requête SQL. Elle serait renvoyer au backend,
+Le résultat de la requête serait représenter après dans l'interface.
+Puis il y a une input area pour faire entrer le code qui trace le graphe
+et le graphe sera afficher dans l'interface
+
+Le graphe doit être interactif, quand on clique sur un élément du graphe (point, pic, ...)
+les propriétés par rapport à ce point ou pic sera affiché
+
+Donner les étapes et les détails pour réaliser ceci.
+
+
+
+
+
