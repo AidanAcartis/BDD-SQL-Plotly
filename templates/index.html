@@ -5,12 +5,72 @@
     <title>SQL and Graph Interface</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="../static/script.js" defer></script>
+    
+    <!-- Bonus : Jolie police Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+    <style>
+        /* Style du terminal SQL */
+        #sqlTerminal {
+            background-color: black;
+            color: lightgreen;
+            font-family: monospace;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid gray;
+            white-space: pre-wrap;
+        }
+        #sqlTerminal:focus {
+            outline: none;
+        }
+        .prompt {
+            color: cyan;
+        }
+
+        /* Style de l'éditeur Plotly */
+        #plotlyCode {
+            background-color: #1e1e1e; /* fond sombre */
+            color: #d4d4d4; /* texte gris clair */
+            font-family: 'Fira Code', 'Courier New', monospace; /* police propre */
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            width: 90%;
+            height: 200px;
+            resize: vertical; /* redimensionner verticalement seulement */
+            white-space: pre; /* respecte les espaces */
+            overflow: auto;
+        }
+        #plotlyCode:focus {
+            outline: none;
+            border-color: #00adb5; /* couleur sympa au focus */
+            box-shadow: 0 0 5px #00adb5;
+        }
+        /* Style pour la description de la requête */
+        #description {
+            margin: 15px 0;
+            padding: 8px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Fira Code', monospace;
+            cursor: pointer;
+            min-height: 30px;
+        }
+        #description[contenteditable="true"] {
+            background-color: #fff8dc;
+            border: 1px solid #00adb5;
+        }
+    </style>
 </head>
 <body>
     <h2>1️⃣ Tape ta requête SQL</h2>
-    <textarea id="sqlQuery" placeholder="SELECT * FROM students LIMIT 5;"></textarea><br>
+    <!-- 📋 Description editable -->
+    <div id="description" title="Clique pour éditer">Clique ici pour décrire ta requête...</div>
+    <div id="sqlTerminal" contenteditable="true"></div><br>
     <button onclick="sendQuery()">Envoyer la requête</button>
-
     <button onclick="toggleResult()">Afficher / Cacher le résultat</button>
 
     <div id="queryResult" style="margin-top: 20px; display: none;">
@@ -20,11 +80,30 @@
 
     <h2>2️⃣ Tape ton code Plotly</h2>
     <textarea id="plotlyCode" placeholder="Exemple : { x: data.Age, y: data.CGPA, type: 'scatter', mode: 'markers' }"></textarea><br>
+    <textarea id="plotlyLayout" placeholder="Exemple : { x: data.Age, y: data.CGPA, type: 'scatter', mode: 'markers' }"></textarea><br>
     <button onclick="drawPlot()">Tracer le graphe</button>
 
     <div id="graph"></div>
 
     <h2>🧩 Propriétés du point sélectionné</h2>
     <div id="pointInfo"></div>
+
+    <script>
+        // ✍️ Gestion de la description edit/non-edit
+        const description = document.getElementById('description');
+
+        description.addEventListener('click', () => {
+            description.setAttribute('contenteditable', 'true');
+            description.focus();
+        });
+
+        description.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // empêcher un saut de ligne
+                description.setAttribute('contenteditable', 'false');
+                description.blur();
+            }
+        });
+    </script>
 </body>
 </html>

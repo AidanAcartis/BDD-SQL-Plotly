@@ -1,50 +1,12 @@
 let data = {};  // Stocker les résultats de la requête
 
-window.onload = () => {
-    const sqlTerminal = document.getElementById('sqlTerminal');
-    addPrompt(sqlTerminal);
-
-    sqlTerminal.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();  // Empêcher le saut de ligne classique
-            sqlTerminal.appendChild(document.createElement('br'));
-            addPrompt(sqlTerminal);
-            placeCaretAtEnd(sqlTerminal);
-        }
-    });
-};
-
-function addPrompt(terminal) {
-    const prompt = document.createElement('span');
-    prompt.className = 'prompt';
-    prompt.textContent = '> ';
-    terminal.appendChild(prompt);
-}
-
-function placeCaretAtEnd(el) {
-    const range = document.createRange();
-    const sel = window.getSelection();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
-}
-
 async function sendQuery() {
-    const terminal = document.getElementById('sqlTerminal');
-    const rawText = terminal.innerText;
-
-    // Enlève tous les "mysql> " pour reconstituer la vraie requête
-    const query = rawText.split('\n')
-        .map(line => line.replace(/^>\s*/, ''))   // ici juste > 
-        .join(' ');
-
+    const query = document.getElementById('sqlQuery').value;
     const response = await fetch('http://127.0.0.1:5000/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: query })
     });
-
     const result = await response.json();
     if (result.status === 'success') {
         data = result.data; // Stockage des données reçues
@@ -54,7 +16,6 @@ async function sendQuery() {
     } else {
         alert('Erreur: ' + result.message);
     }
-    document.getElementById('resultArea').textContent = JSON.stringify(result, null, 2);
 }
 
 function toggleResult() {
@@ -71,8 +32,7 @@ function drawPlot() {
     const code = document.getElementById('plotlyCode').value;
     try {
         const plotData = [eval('({' + code + '})')];
-        const layout = eval('({' + document.getElementById('plotlyLayout').value + '})');
-        Plotly.newPlot('graph', plotData, layout);
+        Plotly.newPlot('graph', plotData);
 
         // Ajouter événement de click
         var graphDiv = document.getElementById('graph');
@@ -82,8 +42,8 @@ function drawPlot() {
     
             // Dynamically iterate through all the properties of the point object
             for (let key in point) {
-                // Avoid including internal properties like 'fullData', 'data', 'xaxis', 'yaxis'
-                if (point.hasOwnProperty(key) && !['fullData', 'data', 'xaxis', 'yaxis'].includes(key)) {
+                // Avoid including internal properties like 'fullData'
+                if (point.hasOwnProperty(key) && key !== 'fullData') {
                     pointInfoText += `${key}: ${point[key]}<br>`;
                 }
             }
@@ -95,4 +55,3 @@ function drawPlot() {
         alert('Erreur dans le code Plotly : ' + e.message);
     }
 }
-
