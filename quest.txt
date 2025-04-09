@@ -1,0 +1,291 @@
+est-il possible d'ecrire un script ou un code python qui interagissent avec des codes de telle facon:
+
+J'ai ce fichier 'plots_sql.txt' qui contient mes listes d'input:
+[
+    {
+        nominalisation: "Afficher pour chaque profession la moyenne du CGPA et le pourcentage d’étudiants dépressifs (avec plus de 5 étudiants).",
+        sql: "
+            SELECT 
+                Profession,
+                AVG(CGPA) AS Average_CGPA,
+                100.0 * SUM(Depression) / COUNT(*) AS Depression_Rate
+            FROM 
+                students
+            GROUP BY 
+                Profession
+            HAVING 
+                COUNT(*) > 5
+            ORDER BY 
+                Depression_Rate DESC;
+        ",
+        plotly: {
+            data: {
+                x: data.Profession,
+                y: data.Depression_Rate,
+                type: 'bar',
+                marker: {
+                    color: 'salmon'
+                }
+            },
+            layout: {
+                title: 'Moyenne du CGPA et Pourcentage d\'étudiants Dépressifs par Profession',
+                xaxis: {
+                    title: 'Profession'
+                },
+                yaxis: {
+                    title: '% Dépressifs'
+                }
+            }
+        }
+    },
+    {
+        nominalisation: "Afficher la répartition des étudiants selon le genre.",
+        sql: "
+            SELECT 
+                Gender, 
+                COUNT(*) AS Gender_Count 
+            FROM 
+                students 
+            GROUP BY 
+                Gender;
+        ",
+        plotly: {
+            data: {
+                labels: data.Gender,
+                values: data.Gender_Count,
+                type: 'pie',
+                marker: {
+                    colors: [
+                        'lightblue',
+                        'lightpink'
+                    ]
+                }
+            },
+            layout: {
+                title: 'Répartition des Étudiants par Genre'
+            }
+        }
+    },
+    {
+        nominalisation: "Nombre de pensées suicidaires selon l'âge et le genre (pour les groupes ayant plus de 3 cas)",
+        sql: "
+            SELECT 
+                Age, 
+                Gender, 
+                COUNT(*) AS Suicidal_Thoughts_Count 
+            FROM 
+                students 
+            WHERE 
+                Suicidal_Thoughts = 'Yes' 
+            GROUP BY 
+                Age, Gender 
+            HAVING 
+                COUNT(*) > 3 
+            ORDER BY 
+                Suicidal_Thoughts_Count DESC;
+        ",
+        plotly: {
+            x: data.Age,
+            y: data.Suicidal_Thoughts_Count,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Suicidal Thoughts Count',
+            line: {
+                color: 'crimson'
+            }
+        },
+        layout: {
+            title: 'Suicidal Thoughts by Age and Gender',
+            xaxis: {
+                title: 'Age',
+                showgrid: true,
+                zeroline: false
+            },
+            yaxis: {
+                title: 'Number of Suicidal Thoughts',
+                showgrid: true,
+                zeroline: false
+            },
+            showlegend: true,
+            plot_bgcolor: '#f4f4f4',
+            paper_bgcolor: '#f9f9f9'
+        }
+    }
+]
+
+IL y a nominalisation, sql, plotly, layout
+1. ecrire le contenu de nominalisation dans 'description' sans le guillement
+(de facon comme si une personne ecrit, c'est-a-dire inserer lettre par lettre)
+2. quand c'est fini, simuler un appui sur le boutton 'Enter'
+3. ecrire le contenu de SQL dans 'sqlTerminal' descendre a la ligne en simulant
+'un appui sur Enter' quand on descend a la ligne dans dans le fichier(sans les guillemets)
+4. Simuler un clique sur le boutton 'Send the query'
+5. Si tout se passe normalement l'alert va apparaitre "if (result.status === 'success') {
+        data = result.data; // Stockage des données reçues
+        document.getElementById('resultArea').innerText = JSON.stringify(data, null, 2); 
+        // 🔥 Affiche joliment le JSON
+        alert('Données reçues avec succès ! Tu peux tracer ton graphe.');
+    } else {
+        alert('Erreur: ' + result.message);
+    }" simuler un clique sur le 'ok' de l' 'alert'
+6. Apres, simuler un clique sur le boutton 'Show / Hide the results' 
+7. Apres, 3s simuler un clique sur le boutton 'Show / Hide the results' 
+8. Puis ecrit le contenu de plotly dans les '{}' sans les '{}'(lettre par lettre)
+9. ecrit le contenu de layout dans les {} sans les '{}'(lettre par lettre)
+10. SImuler un clique sur le boutton 'Draw the graph'
+11. dans le terminal d'execution de ce code, on va attendre par une question
+'would you like to continue the simulation 'y/n' y 'Enter' si oui et n sinon
+et on poursuit ces 11 processus pour le deuxieme objet dans la liste (ici par exemple il y en a 3)
+
+Apres la troisieme (le final) de la liste, on arrete le programme
+
+Voici les elements :
+ <div id="description" contenteditable="true" data-placeholder="What is your query?" spellcheck="false"></div>
+        <div id="sqlTerminal" contenteditable="true" spellcheck="false"></div><br>
+        <button onclick="sendQuery()">Send the query</button>
+        <button onclick="toggleResult()">Show / Hide the results</button>
+
+        <div id="queryResult" style="margin-top: 20px; display: none;">
+            <h3>Query results :</h3>
+            <pre id="resultArea"></pre>
+        </div>
+
+        <h2>2️⃣ Insert your Plotly code</h2>
+        <div class="textarea-container">
+            <textarea id="plotlyCode" placeholder="Insert the plotly code here" spellcheck="false"></textarea>
+            <textarea id="plotlyLayout" placeholder="Insert the layout code here" spellcheck="false"></textarea>
+        </div>
+        
+        <button onclick="drawPlot()">Draw the graph</button>
+        
+Voici les scripts dans mon programme:
+<script>
+        const description = document.getElementById('description');
+        
+        // Quand on clique, on permet d'éditer
+        description.addEventListener('click', () => {
+            description.setAttribute('contenteditable', 'true');
+            description.focus();
+        });
+        
+        // Quand on appuie sur "Entrée", on arrête l'édition
+        description.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Empêche l'ajout de saut de ligne
+                description.setAttribute('contenteditable', 'false'); // Désactive l'édition
+                description.blur(); // Perd le focus
+                if (description.textContent.trim() === '') {
+                    description.textContent = description.getAttribute('data-placeholder'); // Ajouter un placeholder si vide
+                }
+            }
+        });
+
+        // (optionnel) Pour forcer l'affichage ou le masquage du placeholder si besoin
+        description.addEventListener('input', () => {
+            if (description.textContent.trim() === '') {
+                description.textContent = description.getAttribute('data-placeholder'); // Ajouter un placeholder si vide
+            }
+        });
+    </script>         
+
+let data = {};  // Stocker les résultats de la requête
+
+window.onload = () => {
+    const sqlTerminal = document.getElementById('sqlTerminal');
+    addPrompt(sqlTerminal);
+
+    sqlTerminal.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Empêcher le saut de ligne classique
+            sqlTerminal.appendChild(document.createElement('br'));
+            addPrompt(sqlTerminal);
+            placeCaretAtEnd(sqlTerminal);
+        }
+    });
+};
+
+function addPrompt(terminal) {
+    const prompt = document.createElement('span');
+    prompt.className = 'prompt';
+    prompt.textContent = '> ';
+    terminal.appendChild(prompt);
+}
+
+function placeCaretAtEnd(el) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+async function sendQuery() {
+    const terminal = document.getElementById('sqlTerminal');
+    const rawText = terminal.innerText;
+
+    // Enlève tous les "mysql> " pour reconstituer la vraie requête
+    const query = rawText.split('\n')
+        .map(line => line.replace(/^>\s*/, ''))   // ici juste > 
+        .join(' ');
+
+    const response = await fetch('http://127.0.0.1:5000/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query })
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+        data = result.data; // Stockage des données reçues
+        document.getElementById('resultArea').innerText = JSON.stringify(data, null, 2); 
+        // 🔥 Affiche joliment le JSON
+        alert('Données reçues avec succès ! Tu peux tracer ton graphe.');
+    } else {
+        alert('Erreur: ' + result.message);
+    }
+    document.getElementById('resultArea').textContent = JSON.stringify(result, null, 2);
+}
+
+function toggleResult() {
+    const resultDiv = document.getElementById('queryResult');
+    if (resultDiv.style.display === 'none') {
+        resultDiv.style.display = 'block'; // Affiche
+    } else {
+        resultDiv.style.display = 'none';  // Cache
+    }
+}
+
+
+function drawPlot() {
+    const code = document.getElementById('plotlyCode').value;
+    try {
+        const plotData = [eval('({' + code + '})')];
+        const layout = eval('({' + document.getElementById('plotlyLayout').value + '})');
+        Plotly.newPlot('graph', plotData, layout);
+
+        // Ajouter événement de click
+        var graphDiv = document.getElementById('graph');
+        graphDiv.on('plotly_click', function(data){
+            const point = data.points[0];
+            let pointInfoText = '';
+    
+            // Dynamically iterate through all the properties of the point object
+            for (let key in point) {
+                // Avoid including internal properties like 'fullData', 'data', 'xaxis', 'yaxis'
+                if (point.hasOwnProperty(key) && !['fullData', 'data', 'xaxis', 'yaxis'].includes(key)) {
+                    pointInfoText += `${key}: ${point[key]}<br>`;
+                }
+            }
+    
+            // Update the 'pointInfo' element with all available point data
+            document.getElementById('pointInfo').innerHTML = pointInfoText;
+        });
+    } catch (e) {
+        alert('Erreur dans le code Plotly : ' + e.message);
+    }
+}
+
+
+
+
