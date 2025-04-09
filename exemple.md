@@ -1,14 +1,3 @@
-Super ! 🔥  
-Tu veux donc **un exemple d'une requête SQL un peu avancée** + **le code Plotly** pour **dessiner à partir des résultats**.
-
-**Voici ce que je te propose :**
-
----
-
-# 🧩 1. Requête SQL intéressante
-
-**Objectif** :  
-*Afficher pour chaque profession, la moyenne du CGPA (notes) et le pourcentage d'étudiants dépressifs.*
 
 **Requête SQL :**
 ```sql
@@ -31,15 +20,6 @@ ORDER BY
     type: 'bar',
     marker: { color: 'salmon' }
 ```
-🔵 **Explication rapide :**
-- `AVG(CGPA)` ➔ moyenne des notes par profession.
-- `SUM(Depression)/COUNT(*)` ➔ % d'étudiants qui ont `Depression = 1` (donc dépressifs).
-- `HAVING COUNT(*) > 5` ➔ on ne garde que les professions qui ont **plus de 5 étudiants**.
-- `ORDER BY Depression_Rate DESC` ➔ trié du plus dépressif au moins dépressif.
-
----
-
-Merci pour la précision. Voici plusieurs autres exemples qui suivent ton format, utilisant des requêtes SQL complexes, avec des types de graphiques variés, en fonction des données que tu obtiens dans la requête SQL.
 
 ### 1. **Graphique à barres empilées (Stacked Bar Chart)**
 
@@ -269,5 +249,22 @@ ORDER BY
     mode: 'lines+markers',
     name: 'Suicidal Thoughts Count',
     line: { color: 'crimson' }
-
+    
+    const plotLayout = `
+{
+    title: 'Suicidal Thoughts by Age and Gender',
+    xaxis: {
+        title: 'Age',
+        showgrid: true,
+        zeroline: false
+    },
+    yaxis: {
+        title: 'Number of Suicidal Thoughts',
+        showgrid: true,
+        zeroline: false
+    },
+    showlegend: true,
+    plot_bgcolor: '#f4f4f4',
+    paper_bgcolor: '#f9f9f9'
+}`;
 ```

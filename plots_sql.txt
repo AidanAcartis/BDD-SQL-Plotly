@@ -1,0 +1,372 @@
+[
+    {
+        nominalisation: "Afficher pour chaque profession la moyenne du CGPA et le pourcentage d’étudiants dépressifs (avec plus de 5 étudiants).",
+        sql: "
+            SELECT 
+                Profession,
+                AVG(CGPA) AS Average_CGPA,
+                100.0 * SUM(Depression) / COUNT(*) AS Depression_Rate
+            FROM 
+                students
+            GROUP BY 
+                Profession
+            HAVING 
+                COUNT(*) > 5
+            ORDER BY 
+                Depression_Rate DESC;
+        ",
+        plotly: {
+            data: {
+                x: data.Profession,
+                y: data.Depression_Rate,
+                type: 'bar',
+                marker: {
+                    color: 'salmon'
+                }
+            },
+            layout: {
+                title: 'Moyenne du CGPA et Pourcentage d\'étudiants Dépressifs par Profession',
+                xaxis: {
+                    title: 'Profession'
+                },
+                yaxis: {
+                    title: '% Dépressifs'
+                }
+            }
+        }
+    },
+    {
+        nominalisation: "Afficher la répartition des étudiants selon le genre.",
+        sql: "
+            SELECT 
+                Gender, 
+                COUNT(*) AS Gender_Count 
+            FROM 
+                students 
+            GROUP BY 
+                Gender;
+        ",
+        plotly: {
+            data: {
+                labels: data.Gender,
+                values: data.Gender_Count,
+                type: 'pie',
+                marker: {
+                    colors: [
+                        'lightblue',
+                        'lightpink'
+                    ]
+                }
+            },
+            layout: {
+                title: 'Répartition des Étudiants par Genre'
+            }
+        }
+    },
+    {
+        nominalisation: "Nombre de pensées suicidaires selon l'âge et le genre (pour les groupes ayant plus de 3 cas)",
+        sql: "
+            SELECT 
+                Age, 
+                Gender, 
+                COUNT(*) AS Suicidal_Thoughts_Count 
+            FROM 
+                students 
+            WHERE 
+                Suicidal_Thoughts = 'Yes' 
+            GROUP BY 
+                Age, Gender 
+            HAVING 
+                COUNT(*) > 3 
+            ORDER BY 
+                Suicidal_Thoughts_Count DESC;
+        ",
+        plotly: {
+            x: data.Age,
+            y: data.Suicidal_Thoughts_Count,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Suicidal Thoughts Count',
+            line: {
+                color: 'crimson'
+            }
+        },
+        layout: {
+            title: 'Suicidal Thoughts by Age and Gender',
+            xaxis: {
+                title: 'Age',
+                showgrid: true,
+                zeroline: false
+            },
+            yaxis: {
+                title: 'Number of Suicidal Thoughts',
+                showgrid: true,
+                zeroline: false
+            },
+            showlegend: true,
+            plot_bgcolor: '#f4f4f4',
+            paper_bgcolor: '#f9f9f9'
+        }
+    },
+    {
+        nominalisation: "Afficher la répartition du CGPA par profession.",
+        sql: "
+            SELECT 
+                Profession, 
+                CGPA 
+            FROM 
+                students 
+            WHERE 
+                CGPA IS NOT NULL;
+        ",
+        plotly: {
+            x: data.Profession,
+            y: data.CGPA,
+            type: "box",
+            name: "CGPA Distribution by Profession",
+            marker: {
+                color: "purple"
+            }
+        },
+        layout: {
+            title: "CGPA Distribution by Profession",
+            xaxis: {
+                title: "Profession"
+            },
+            yaxis: {
+                title: "CGPA"
+            },
+            showlegend: true,
+            plot_bgcolor: "#f4f4f4",
+            paper_bgcolor: "#f9f9f9"
+        }
+    },
+    {
+        nominalisation: "Afficher la moyenne du CGPA selon l'âge.",
+        sql: "
+            SELECT 
+                Age, 
+                AVG(CGPA) AS Average_CGPA 
+            FROM 
+                students 
+            GROUP BY 
+                Age 
+            ORDER BY 
+                Age;
+        ",
+        plotly: {
+            x: data.Age,
+            y: data.Average_CGPA,
+            type: "scatter",
+            mode: "lines+markers",
+            name: "Average CGPA by Age",
+            line: {
+                color: "green"
+            }
+        },
+        layout: {
+            title: "Average CGPA by Age",
+            xaxis: {
+                title: "Age"
+            },
+            yaxis: {
+                title: "Average CGPA"
+            },
+            showlegend: true,
+            plot_bgcolor: "#f4f4f4",
+            paper_bgcolor: "#f9f9f9"
+        }
+    },
+    {
+        nominalisation: "Afficher la relation entre la satisfaction des études et le CGPA selon l'âge.",
+        sql: "
+            SELECT 
+                Age, 
+                CGPA, 
+                Study_Satisfaction 
+            FROM 
+                students 
+            WHERE 
+                Age IS NOT NULL 
+                AND CGPA IS NOT NULL 
+                AND Study_Satisfaction IS NOT NULL;
+        ",
+        plotly: {
+            x: data.Age,
+            y: data.CGPA,
+            size: data.Study_Satisfaction,
+            type: "scatter",
+            mode: "markers",
+            name: "Study Satisfaction vs CGPA",
+            marker: {
+                color: "blue",
+                opacity: 0.5
+            }
+        },
+        layout: {
+            title: "Study Satisfaction vs CGPA",
+            xaxis: {
+                title: "Age"
+            },
+            yaxis: {
+                title: "CGPA"
+            },
+            showlegend: true,
+            plot_bgcolor: "#f4f4f4",
+            paper_bgcolor: "#f9f9f9"
+        }
+    },
+    {
+        nominalisation: "Afficher la moyenne du CGPA par âge et profession.",
+        sql: "
+            SELECT 
+                Age, 
+                Profession, 
+                AVG(CGPA) AS Average_CGPA 
+            FROM 
+                students 
+            GROUP BY 
+                Age, Profession;
+        ",
+        plotly: {
+            z: data.Average_CGPA,
+            x: data.Age,
+            y: data.Profession,
+            type: "heatmap",
+            colorscale: "Viridis",
+            colorbar: {
+                title: "Average CGPA"
+            }
+        },
+        layout: {
+            title: "Average CGPA by Age and Profession",
+            xaxis: {
+                title: "Âge"
+            },
+            yaxis: {
+                title: "Profession"
+            },
+            showlegend: true,
+            plot_bgcolor: "#f4f4f4",
+            paper_bgcolor: "#f9f9f9"
+        }
+    },
+    {
+        nominalisation: "Afficher la répartition des étudiants par profession.",
+        sql: "
+            SELECT 
+                Profession, 
+                COUNT(*) AS Profession_Count 
+            FROM 
+                students 
+            GROUP BY 
+                Profession 
+            ORDER BY 
+                Profession_Count DESC;
+        ",
+        plotly: {
+            x: data.Profession_Count,
+            y: data.Profession,
+            type: "bar",
+            orientation: "h",
+            name: "Profession Distribution",
+            marker: {
+                color: "coral"
+            }
+        },
+        layout: {
+            title: "Profession Distribution",
+            xaxis: {
+                title: "Nombre d'étudiants"
+            },
+            yaxis: {
+                title: "Profession"
+            },
+            showlegend: true,
+            plot_bgcolor: "#f4f4f4",
+            paper_bgcolor: "#f9f9f9"
+        }
+    },
+    {
+        nominalisation: "Afficher pour chaque profession le nombre d’étudiants dépressifs et non-dépressifs.",
+        sql: "
+            SELECT 
+                Profession, 
+                SUM(CASE WHEN Depression = 1 THEN 1 ELSE 0 END) AS Depressed, 
+                SUM(CASE WHEN Depression = 0 THEN 1 ELSE 0 END) AS Not_Depressed 
+            FROM 
+                students 
+            GROUP BY 
+                Profession 
+            ORDER BY 
+                Depressed DESC;
+        ",
+        plotly: {
+            data: {
+                x: data.Profession,
+                y: [
+                    data.Depressed,
+                    data.Not_Depressed
+                ],
+                type: 'bar',
+                barmode: 'stack',
+                marker: {
+                    color: [
+                        '#FF6347',
+                        '#90EE90'
+                    ]
+                }
+            },
+            layout: {
+                title: 'Répartition des Étudiants Dépressifs et Non-Dépressifs par Profession',
+                xaxis: {
+                    title: 'Profession'
+                },
+                yaxis: {
+                    title: "Nombre d'étudiants"
+                }
+            }
+        }
+    },
+    {
+        nominalisation: "Afficher selon l'âge la moyenne du CGPA et la satisfaction des études.",
+        sql: "
+            SELECT 
+                Age, 
+                AVG(CGPA) AS Average_CGPA, 
+                AVG(Study_Satisfaction) AS Avg_Study_Satisfaction 
+            FROM 
+                students 
+            GROUP BY 
+                Age 
+            ORDER BY 
+                Age;
+        ",
+        plotly: {
+            data: {
+                x: data.Age,
+                y: [
+                    data.Average_CGPA,
+                    data.Avg_Study_Satisfaction
+                ],
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {
+                    color: [
+                        'blue',
+                        'orange'
+                    ]
+                }
+            },
+            layout: {
+                title: 'Moyenne du CGPA et Satisfaction des Études par Âge',
+                xaxis: {
+                    title: 'Âge'
+                },
+                yaxis: {
+                    title: 'Valeurs moyennes'
+                }
+            }
+        }
+    }
+]

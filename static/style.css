@@ -1,0 +1,114 @@
+.container {
+    margin: 30px; /* ou 50px si tu veux plus d'espace */
+    padding: 20px; /* optionnel pour ajouter de l'espace à l'intérieur */
+    background-color: #f5f3f3; /* optionnel : un fond blanc propre */
+    border-radius: 10px; /* optionnel : coins arrondis */
+    font-family: 'Fira Code', monospace;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optionnel : petite ombre pour un effet joli */
+}
+
+/* Enlève les surligneurs rouges des inputs invalides */
+input:invalid, textarea:invalid {
+    border: 1px solid #ccc; /* Remet une bordure neutre */
+    box-shadow: none; /* Supprime l'ombre */
+}
+
+
+button {
+    background-color: #f2f2f2; /* gris très clair */
+    color: #333; /* texte légèrement foncé */
+    padding: 6px 12px; /* plus petit */
+    margin: 8px 4px;
+    border: 1px solid #ccc; /* petit contour léger */
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px; /* petit texte */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* ombre très discrète */
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #e6e6e6; /* un peu plus foncé au hover */
+    transform: translateY(-1px); /* léger soulèvement */
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Style pour la description de la requête */
+#description {
+    margin: 15px 0;
+    padding: 8px;
+    width: 60%;
+    max-width: 600px;
+    margin-bottom: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Fira Code', monospace;
+    cursor: pointer;
+    min-height: 30px;
+}
+#description[contenteditable="true"] {
+    background-color: #d8d8d6;
+    border: 1px solid #00adb5;
+}
+#description:empty::before {
+    content: attr(data-placeholder);
+    color: #333;
+    pointer-events: none;
+}
+
+#sqlTerminal {
+    width: 30%;
+    max-width: 600px;
+    margin-bottom: 10px;
+    background-color: black;
+    color: lightgreen;
+    font-family: monospace;
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid gray;
+    white-space: pre-wrap;
+    border-radius: 8px;
+}
+#sqlTerminal:focus {
+    outline: none;
+}
+.prompt {
+    color: cyan;
+}
+
+/* Style de l'éditeur Plotly */
+#plotlyCode, #plotlyLayout {
+    background-color: #1e1e1e; /* fond sombre */
+    color: #d4d4d4; /* texte gris clair */
+    font-family: 'Fira Code', 'Courier New', monospace; /* police propre */
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    width: 48%; /* Largeur de chaque textarea */
+    height: 200px;
+    resize: vertical; /* redimensionner verticalement seulement */
+    white-space: pre; /* respecte les espaces */
+    overflow: auto;
+}
+
+#plotlyCode:focus, #plotlyLayout:focus {
+    outline: none;
+    border-color: #00adb5; /* couleur sympa au focus */
+    box-shadow: 0 0 5px #00adb5;
+}
+
+/* Conteneur pour les deux textarea côte à côte */
+.textarea-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espacement entre les deux */
+    margin-bottom: 20px; /* Espacement en bas */
+}
+
