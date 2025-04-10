@@ -1,0 +1,24 @@
+Dans ce petit projet, j'ai utilise Flask pour mettre en relation avec la base de donne, dans app.py.
+Pour le web, j'ai utilise html, css et javascript.
+
+Pour lancer le programme de la ou on est, on doit lancer ceci pour etre dans le virual environment:
+source ../../../Projects/myenv/bin/activate
+
+Puis on lance le serveur :"python3 app.py"
+1. On entre premierement ce que selectionne la requete SQL
+2. On tape la requete SQL dans le petit terminal 
+3. Cliquer sur le boutton 'Send the query'
+4. Si la commande est correcte on recoit un alerte 'Données reçues avec succès ! Tu peux tracer ton graphe.'
+Cliquer sur le 'ok' de l'alert pour continuer
+5. Pour verifier si le resultat est bien la, cliquer sur 'Show / Hide the results' pour le
+regarder et le cacher.
+6. On entre dans la case de code Plotly le code plotly
+et dans la case de layout en entre le titre de la figure, le nom de l'axe x et l'axe y,...
+7. Apres on clique sur le boutton 'Draw the graph'
+8. On peut voir dans properties les proprietes de point clique
+
+Le code simulation.py simule ce processus avec les 10 items dans 'plots_sql.json'
+Apres chaque item, il y a cette question dans le terminal ou est lance simulation.py:
+'Would you like to continue the simulation for item {item_index + 1}? (y/n): '
+n pour arreter et fermer la page et y pour continuer.
+q

@@ -1,0 +1,6 @@
+Flask==3.1.0
+pandas==2.2.3
+flask-cors==5.0.1
+sqlite3  # Cette bibliothèque est incluse par défaut dans Python, donc elle n'a pas besoin d'être installée
+undetected-chromedriver==3.5.5
+selenium==4.31.0
