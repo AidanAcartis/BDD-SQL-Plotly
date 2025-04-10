@@ -13,13 +13,24 @@ driver = uc.Chrome()
 with open('plots_sql.json', 'r') as file:
     plots_data = json.load(file)
 
-def simulate_typing(element, text, delay=0.1):
-    """Simule la saisie du texte dans un champ avec un délai entre chaque caractère."""
+def simulate_typing(element, text, delay=0.01):
+    """Simule la saisie du texte dans un champ avec un délai entre chaque caractère et appuie sur ENTER après ', '."""
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, element.get_attribute("id"))))
-    for char in text:
-        element.send_keys(char)
-        time.sleep(delay)
 
+    i = 0
+    while i < len(text):
+        # Vérifie s'il y a ', ' à partir de la position actuelle
+        if text[i:i+2] == ', ':
+            element.send_keys(', ')  # Tape la virgule + espace
+            time.sleep(delay)
+            element.send_keys(Keys.ENTER)  # Appuie sur ENTER
+            i += 2  # Avance de deux caractères (la virgule et l'espace)
+        else:
+            element.send_keys(text[i])  # Tape un seul caractère
+            time.sleep(delay)
+            i += 1
+
+    
 def clean_plotly_data(data):
     """Nettoie les données pour avoir des clés sans guillemets et des valeurs correctement formatées."""
     if isinstance(data, dict):
@@ -81,7 +92,7 @@ try:
         sql_element = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, "sqlTerminal"))
         )
-        simulate_typing(sql_element, item['sql'], delay=0.2)
+        simulate_typing(sql_element, item['sql'], delay=0.01)
         sql_element.send_keys(Keys.ENTER)
 
         # 4. Cliquer sur 'Send the query' après une attente explicite
@@ -105,8 +116,11 @@ try:
         toggle_button.click()
 
         # 7. Attendre 3 secondes avant de cliquer à nouveau
-        time.sleep(3)
+        time.sleep(5)
         toggle_button.click()
+
+        # ➡️ Nouvelle petite pause pour être sûr
+        time.sleep(5)
 
         # 8. Attente explicite pour saisir le code plotly (avec défilement si nécessaire)
         plotly_code = WebDriverWait(driver, 10).until(
