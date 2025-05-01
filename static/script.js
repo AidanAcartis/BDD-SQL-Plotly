@@ -121,24 +121,68 @@ function drawPlot() {
         const plotData = [eval('({' + code + '})')];
         const layout = eval('({' + document.getElementById('plotlyLayout').value + '})');
         Plotly.newPlot('graph', plotData, layout);
-
+        
         // Ajouter événement de click
         var graphDiv = document.getElementById('graph');
+        // graphDiv.on('plotly_click', function(data){
+        //     const point = data.points[0];
+        //     let pointInfoText = '';
+    
+        //     // Dynamically iterate through all the properties of the point object
+        //     for (let key in point) {
+        //         // Avoid including internal properties like 'fullData', 'data', 'xaxis', 'yaxis'
+        //         if (point.hasOwnProperty(key) && !['fullData', 'data', 'xaxis', 'yaxis'].includes(key)) {
+        //             pointInfoText += `${key}: ${point[key]}<br>`;
+        //         }
+        //     }
+    
+        //     // Update the 'pointInfo' element with all available point data
+        //     document.getElementById('pointInfo').innerHTML = pointInfoText;
+        // });
         graphDiv.on('plotly_click', function(data){
             const point = data.points[0];
             let pointInfoText = '';
-    
-            // Dynamically iterate through all the properties of the point object
-            for (let key in point) {
-                // Avoid including internal properties like 'fullData', 'data', 'xaxis', 'yaxis'
-                if (point.hasOwnProperty(key) && !['fullData', 'data', 'xaxis', 'yaxis'].includes(key)) {
-                    pointInfoText += `${key}: ${point[key]}<br>`;
-                }
+        
+            // Récupération des titres des axes
+            const layout = document.getElementById('plotlyLayout').value;
+            const parsedLayout = eval('({' + layout + '})');
+            const xAxisTitle = parsedLayout?.xaxis?.title || 'X';
+            const yAxisTitle = parsedLayout?.yaxis?.title || 'Y';
+        
+            // Ajout des données avec les bons titres
+            pointInfoText += `curveNumber: ${point.curveNumber}<br>`;
+            pointInfoText += `pointNumber: ${point.pointNumber}<br>`;
+            pointInfoText += `pointIndex: ${point.pointIndex}<br>`;
+            pointInfoText += `${xAxisTitle}: ${point.x}<br>`;
+            pointInfoText += `${yAxisTitle}: ${point.y}<br>`;
+        
+            // Ajoute aussi les labels personnalisés s'ils existent
+            if (point.hasOwnProperty('label')) {
+                pointInfoText += `label: ${point.label}<br>`;
             }
-    
-            // Update the 'pointInfo' element with all available point data
+            if (point.hasOwnProperty('value')) {
+                pointInfoText += `value: ${point.value}<br>`;
+            }
+        
             document.getElementById('pointInfo').innerHTML = pointInfoText;
-        });
+        
+            // Affiche la popup
+            const modal = document.getElementById('popupModal');
+            modal.style.display = 'block';
+        
+            // Ferme la popup quand on clique sur X
+            document.getElementById('popupClose').onclick = function () {
+                modal.style.display = 'none';
+            };
+        
+            // Ferme la popup quand on clique en dehors
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });        
+        
     } catch (e) {
         alert('Erreur dans le code Plotly : ' + e.message);
     }
