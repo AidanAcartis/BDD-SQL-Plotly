@@ -13,7 +13,7 @@ driver = uc.Chrome()
 with open('plots_sql.json', 'r') as file:
     plots_data = json.load(file)
 
-def simulate_typing(element, text, delay=0.01):
+def simulate_typing(element, text, delay=0.001):
     """Simule la saisie du texte dans un champ avec un délai entre chaque caractère et appuie sur ENTER après ', '."""
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, element.get_attribute("id"))))
 
@@ -92,7 +92,7 @@ try:
         sql_element = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, "sqlTerminal"))
         )
-        simulate_typing(sql_element, item['sql'], delay=0.01)
+        simulate_typing(sql_element, item['sql'], delay=0.001)
         sql_element.send_keys(Keys.ENTER)
 
         # 4. Cliquer sur 'Send the query' après une attente explicite
@@ -120,7 +120,7 @@ try:
         toggle_button.click()
 
         # ➡️ Nouvelle petite pause pour être sûr
-        time.sleep(5)
+        time.sleep(3)
 
         # 8. Attente explicite pour saisir le code plotly (avec défilement si nécessaire)
         plotly_code = WebDriverWait(driver, 10).until(

@@ -13,6 +13,18 @@ input:invalid, textarea:invalid {
     box-shadow: none; /* Supprime l'ombre */
 }
 
+.data-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.data-table th, .data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+.data-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
 
 button {
     background-color: #f2f2f2; /* gris très clair */

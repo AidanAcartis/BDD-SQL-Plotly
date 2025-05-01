@@ -1,0 +1,5 @@
+display columns:
+PRAGMA table_info(students);
+
+display columns name:
+SELECT name FROM pragma_table_info('students');

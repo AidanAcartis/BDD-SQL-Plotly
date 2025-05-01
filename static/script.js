@@ -30,6 +30,53 @@ function placeCaretAtEnd(el) {
     sel.addRange(range);
 }
 
+function displayTableFromData(data) {
+    const container = document.getElementById('queryResult');
+    container.innerHTML = ''; // Nettoie l'ancien contenu
+
+    if (!data || Object.keys(data).length === 0) {
+        container.textContent = "Aucune donnée à afficher.";
+        return;
+    }
+
+    // Récupère les noms des colonnes (clés)
+    const columns = Object.keys(data);
+
+    // Récupère le nombre de lignes
+    const numRows = data[columns[0]].length;
+
+    // Crée le tableau
+    const table = document.createElement('table');
+    table.className = 'data-table'; // tu peux ajouter du CSS pour ce style
+
+    // Crée l'en-tête
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Crée le corps du tableau
+    const tbody = document.createElement('tbody');
+    for (let i = 0; i < numRows; i++) {
+        const row = document.createElement('tr');
+        columns.forEach(col => {
+            const td = document.createElement('td');
+            td.textContent = data[col][i];
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    }
+    table.appendChild(tbody);
+
+    container.appendChild(table);
+}
+
+
 async function sendQuery() {
     const terminal = document.getElementById('sqlTerminal');
     const rawText = terminal.innerText;
@@ -50,6 +97,7 @@ async function sendQuery() {
         data = result.data; // Stockage des données reçues
         document.getElementById('resultArea').innerText = JSON.stringify(data, null, 2); 
         // 🔥 Affiche joliment le JSON
+        displayTableFromData(data);
         alert('Données reçues avec succès ! Tu peux tracer ton graphe.');
     } else {
         alert('Erreur: ' + result.message);
